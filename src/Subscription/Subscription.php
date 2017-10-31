@@ -6,6 +6,7 @@ use Exception;
 use PubNub\Callbacks\SubscribeCallback;
 use PubNub\Enums\PNStatusCategory;
 use PubNub\Exceptions\PubNubUnsubscribeException;
+use PubNub\Models\Consumer\PubSub\PNMessageResult;
 use PubNub\PNConfiguration;
 use PubNub\PubNub;
 use PubNub\PubNubCrypto;
@@ -349,20 +350,9 @@ class Subscription extends EventDispatcher
      * @return bool
      * @throws Exception
      */
-    public function notify($pubnubMessage)
+    public function notify(PNMessageResult $pubnubMessage)
     {
-
-        if (!empty($pubnubMessage['error'])) {
-            //'error' => true,
-            //'service' => 'cURL',
-            //'status' => -1,
-            //'message' => 'request timeout',
-            //'payload' => "Pubnub request timeout. Maximum timeout: " . $this->curlTimeout . " seconds" .
-            //    ". Requested URL: " . $curlResponseURL
-            return $this->_keepPolling;
-        }
-
-        $message = $pubnubMessage['message'];
+        $message = $pubnubMessage->getMessage();
 
         $message = $this->decrypt($message);
 
